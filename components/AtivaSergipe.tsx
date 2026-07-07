@@ -321,7 +321,7 @@ function MuniCard({ nome, data, status, isOpen, onToggle, onAddExec, onDelExec, 
           <div style={{ display: "flex", gap: 18, flexWrap: "wrap", padding: "12px 0 8px" }}>
             {([["startupAtendida", "Startup atendida no município"], ["eli", "Participa do ELI"]] as [string, string][]).map(([f, l]) => (
               <label key={f} style={{ display: "flex", alignItems: "center", gap: 7, fontSize: 13, color: "#4A443B", cursor: "pointer" }}>
-                <input type="checkbox" checked={!!(data as Record<string,unknown>)[f]} onChange={(e) => onFlag(f, e.target.checked)} style={{ width: 15, height: 15, accentColor: "#1F4D3D" }} />
+                <input type="checkbox" checked={!!data[f as keyof MuniData]} onChange={(e) => onFlag(f, e.target.checked)} style={{ width: 15, height: 15, accentColor: "#1F4D3D" }} />
                 {l}
               </label>
             ))}
