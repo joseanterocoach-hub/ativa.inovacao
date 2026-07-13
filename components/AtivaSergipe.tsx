@@ -42,12 +42,12 @@ const uid = () => Math.random().toString(36).slice(2,10) + Date.now().toString(3
 
 // ---
 function computeStatus(data: MuniData) {
-  const exec = data.executions.filter(e => e.tipo === "executada");
+  // Migração automática: execuções antigas sem campo "tipo" tratadas como "executada"
+  const exec = data.executions.filter(e => !e.tipo || e.tipo === "executada");
   const pubs = new Set(exec.map(e => e.publico));
   const ativado = pubs.size >= 2;
   const impulso = (ativado || data.eli) && data.startupAtendida;
   const planejadas = data.executions.filter(e => e.tipo === "planejada");
-  // status projetado (se tudo planejado fosse executado)
   const allPubs = new Set(data.executions.map(e => e.publico));
   const projetado = allPubs.size >= 2;
   return { ativado, impulso, qtdPublicos: pubs.size, planejadas: planejadas.length, executadas: exec.length, projetado };
@@ -66,10 +66,9 @@ function centroid(ring: number[][]): [number,number] {
 }
 function getFill(data: MuniData, hov=false): string {
   const { ativado, impulso } = computeStatus(data);
-  const d = hov ? 0.85 : 1;
   if (impulso)                    return hov ? "#FFD966" : "#F4C95D";
   if (ativado)                    return hov ? "#2A6B52" : "#1F4D3D";
-  if (data.executions.filter(e=>e.tipo==="executada").length > 0) return hov ? "#D9724A" : "#C8623A";
+  if (data.executions.filter(e=>!e.tipo||e.tipo==="executada").length > 0) return hov ? "#D9724A" : "#C8623A";
   if (data.executions.filter(e=>e.tipo==="planejada").length > 0) return hov ? "#8A7EB5" : "#7B6FA8";
   return hov ? "#BEB5A8" : "#C9C0B2";
 }
@@ -100,7 +99,7 @@ function MapaSergipe({ territorios, onSelect, selected }: MapaProps) {
         </div>
       </div>
       <div style={{display:"flex",justifyContent:"center"}}>
-        <svg viewBox={`0 0 ${VW} ${VH}`} style={{width:"100%",maxWidth:680,display:"block",borderRadius:14,border:"1px solid #C8DCE8",boxShadow:"inset 0 2px 8px rgba(0,0,0,.04),0 2px 12px rgba(0,0,0,.06)"}} onMouseLeave={()=>{setTip(null);setHov(null);}}>
+        <svg viewBox={`0 0 ${VW} ${VH}`} style={{width:"100%",maxWidth:420,display:"block",borderRadius:14,border:"1px solid #C8DCE8",boxShadow:"inset 0 2px 8px rgba(0,0,0,.04),0 2px 12px rgba(0,0,0,.06)"}} onMouseLeave={()=>{setTip(null);setHov(null);}}>
           <defs>
             <linearGradient id="ocean" x1="0" y1="0" x2="1" y2="1">
               <stop offset="0%" stopColor="#C8E8F5"/>
@@ -391,23 +390,54 @@ export default function AtivaSergipe() {
       <style>{`*{box-sizing:border-box}button,input,select{font-family:inherit;cursor:pointer}.fade-in{animation:fi .22s ease}@keyframes fi{from{opacity:0;transform:translateY(-4px)}to{opacity:1;transform:none}}::-webkit-scrollbar{width:6px;height:6px}::-webkit-scrollbar-thumb{background:#D8CFC0;border-radius:3px}`}</style>
       <div style={{maxWidth:1100,margin:"0 auto",padding:"28px 20px 80px"}}>
 
-        {/* Header */}
-        <div style={{display:"flex",alignItems:"flex-start",justifyContent:"space-between",flexWrap:"wrap",gap:14,marginBottom:24}}>
-          <div>
-            <div style={{display:"flex",alignItems:"center",gap:10,marginBottom:3}}>
-              <div style={{width:36,height:36,borderRadius:10,background:"#1F4D3D",display:"flex",alignItems:"center",justifyContent:"center"}}>
-                <Zap size={18} color="#F4C95D" strokeWidth={2.5}/>
-              </div>
-              <h1 style={{fontSize:26,fontWeight:700,margin:0,letterSpacing:-.5}}>Ativa Sergipe</h1>
+        {/* Header com logo Ativa */}
+        <div style={{display:"flex",alignItems:"center",justifyContent:"space-between",flexWrap:"wrap",gap:14,marginBottom:24}}>
+          {/* Logo Ativa */}
+          <div style={{display:"flex",alignItems:"center",gap:16}}>
+            <div style={{
+              background:"linear-gradient(135deg,#1A6B6B 0%,#1D7F7F 50%,#155E6E 100%)",
+              borderRadius:16,padding:"10px 16px",
+              display:"flex",alignItems:"center",gap:10,
+              boxShadow:"0 4px 16px rgba(26,107,107,.35)",
+              flexShrink:0,
+            }}>
+              {/* Ícone de nós conectados — fiel à logo */}
+              <svg width="36" height="32" viewBox="0 0 36 32" fill="none">
+                {/* Linhas de conexão */}
+                <line x1="9" y1="10" x2="18" y2="16" stroke="rgba(255,255,255,0.35)" strokeWidth="1.5"/>
+                <line x1="18" y1="16" x2="27" y2="8" stroke="rgba(255,255,255,0.35)" strokeWidth="1.5"/>
+                <line x1="18" y1="16" x2="26" y2="24" stroke="rgba(255,255,255,0.35)" strokeWidth="1.5"/>
+                <line x1="9" y1="10" x2="8" y2="22" stroke="rgba(255,255,255,0.35)" strokeWidth="1.5"/>
+                {/* Nós coloridos */}
+                <circle cx="9"  cy="10" r="5" fill="#4DD8C0"/>
+                <circle cx="27" cy="8"  r="4" fill="#F4C95D"/>
+                <circle cx="18" cy="16" r="6" fill="#3BB5A8"/>
+                <circle cx="26" cy="24" r="4" fill="#5B9BD5"/>
+                <circle cx="8"  cy="22" r="3.5" fill="#E8635A"/>
+              </svg>
+              {/* Texto Ativa */}
+              <span style={{
+                color:"#fff",fontWeight:700,fontSize:22,
+                fontFamily:"'Inter',-apple-system,sans-serif",
+                letterSpacing:"-0.5px",
+              }}>Ativa</span>
             </div>
-            <p style={{margin:0,color:"#857A6C",fontSize:14}}>Acompanhamento da ativação de inovação nos territórios · Sebrae/SE</p>
+            <div>
+              <div style={{fontWeight:700,fontSize:17,color:"#1A1612",letterSpacing:"-0.3px"}}>
+                Inovação nos Territórios
+              </div>
+              <div style={{fontSize:13,color:"#9C9286",marginTop:1}}>
+                Sebrae/SE · Sergipe · {new Date().getFullYear()}
+              </div>
+            </div>
           </div>
+
           <div style={{display:"flex",alignItems:"center",gap:12}}>
             <button onClick={()=>exportarPDF(territorios,stats)}
-              style={{display:"flex",alignItems:"center",gap:7,padding:"9px 16px",borderRadius:9,background:"#1F4D3D",color:"#fff",border:"none",fontWeight:600,fontSize:13,boxShadow:"0 2px 8px rgba(31,77,61,.25)"}}>
+              style={{display:"flex",alignItems:"center",gap:7,padding:"9px 16px",borderRadius:9,background:"linear-gradient(135deg,#1A6B6B,#1D7F7F)",color:"#fff",border:"none",fontWeight:600,fontSize:13,boxShadow:"0 2px 8px rgba(26,107,107,.3)",cursor:"pointer"}}>
               <Download size={14}/> Exportar Relatório PDF
             </button>
-            <div style={{fontSize:12.5,color:saving?"#B5562C":"#9C9286",display:"flex",alignItems:"center",gap:6}}>
+            <div style={{fontSize:12,color:saving?"#B5562C":"#9C9286",display:"flex",alignItems:"center",gap:5}}>
               <span style={{width:7,height:7,borderRadius:"50%",background:saving?"#B5562C":"#6FA287",display:"inline-block"}}/>
               {saving?"salvando…":"sincronizado"}
             </div>
@@ -522,7 +552,7 @@ function MuniCard({nome,data,status,isOpen,onToggle,onAddExec,onDelExec,onConver
   const sColor  = impulso?"#9A7B1E":ativado?"#1F4D3D":executadas>0?"#B5562C":planejadas>0?"#5C4A8C":"#9C9286";
   const sLabel  = impulso?"✦ Impulso":ativado?"✔ Ativado":executadas>0?"⚡ Andamento":planejadas>0?"◷ Planejado":"Sem ação";
 
-  const execAcoes  = data.executions.filter(e=>e.tipo==="executada");
+  const execAcoes  = data.executions.filter(e=>!e.tipo||e.tipo==="executada");
   const planAcoes  = data.executions.filter(e=>e.tipo==="planejada");
   const total      = executadas+planejadas;
   const pct        = total>0?Math.round((executadas/total)*100):0;
