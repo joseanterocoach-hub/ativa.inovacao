@@ -24,6 +24,7 @@ interface MuniData {
   executions: Execution[];
   startupAtendida: boolean;
   eli: boolean;
+  cidadeEmpreendedora: boolean;
 }
 type Territorios = Record<string, MuniData>;
 
@@ -52,7 +53,7 @@ function computeStatus(data: MuniData) {
   const projetado = allPubs.size >= 2;
   return { ativado, impulso, qtdPublicos: pubs.size, planejadas: planejadas.length, executadas: exec.length, projetado };
 }
-function emptyMuni(): MuniData { return { executions: [], startupAtendida: false, eli: false }; }
+function emptyMuni(): MuniData { return { executions: [], startupAtendida: false, eli: false, cidadeEmpreendedora: false }; }
 
 // ---
 function ringToPath(ring: number[][]): string {
@@ -162,6 +163,7 @@ function MapaSergipe({ territorios, onSelect, selected }: MapaProps) {
                 <text x={bx+27} y={by+(l2?47:34)} fontSize="10.5" fill="#C8C0B4" fontFamily="Inter,sans-serif">{status}</text>
                 <text x={bx+14} y={by+bh-5} fontSize="9.5" fill="#888" fontFamily="Inter,sans-serif">{executadas} exec. · {planejadas} plan.</text>
                 {data.eli&&<text x={bx+bw-32} y={by+(l2?47:34)} fontSize="9" fill="#B8A8E0" fontFamily="Inter,sans-serif" fontWeight="700">ELI</text>}
+                {data.cidadeEmpreendedora&&<text x={bx+14} y={by+bh-4} fontSize="9" fill="#5B9BD5" fontFamily="Inter,sans-serif" fontWeight="700">🏙 Cidade Empreendedora</text>}
               </g>
             );
           })()}
@@ -210,7 +212,7 @@ function exportarPDF(territorios: Territorios, stats: Record<string,number>) {
   const todos = MUNICIPIOS_SE.map(m => {
     const data = territorios[m] || emptyMuni();
     const { ativado, impulso, executadas, planejadas } = computeStatus(data);
-    return { nome: m, ativado, impulso, executadas, planejadas, eli: data.eli };
+    return { nome: m, ativado, impulso, executadas, planejadas, eli: data.eli, cidadeEmpreendedora: data.cidadeEmpreendedora };
   });
 
   const html = `<!DOCTYPE html>
@@ -276,6 +278,7 @@ function exportarPDF(territorios: Territorios, stats: Record<string,number>) {
       <th>Planejadas</th>
       <th>Progresso</th>
       <th>ELI</th>
+      <th>Cidade Emp.</th>
     </tr>
   </thead>
   <tbody>
@@ -299,6 +302,7 @@ function exportarPDF(territorios: Territorios, stats: Record<string,number>) {
         <td style="text-align:center">${t.planejadas}</td>
         <td>${bar}</td>
         <td style="text-align:center">${t.eli?"✓":""}</td>
+        <td style="text-align:center">${(t as any).cidadeEmpreendedora?"✓":""}</td>
       </tr>`;
     }).join("")}
   </tbody>
@@ -382,13 +386,67 @@ export default function AtivaSergipe() {
   }
 
   if(loading) return (
-    <div style={{display:"flex",alignItems:"center",justifyContent:"center",height:400,fontFamily:"Inter,sans-serif",color:"#6B6259"}}>Carregando…</div>
+    <div style={{display:"flex",alignItems:"center",justifyContent:"center",height:"100vh",fontFamily:"Inter,sans-serif",background:"#F4F6FA"}}>
+      <div style={{textAlign:"center"}}>
+        <svg width="48" height="42" viewBox="0 0 48 42" fill="none" style={{marginBottom:16}}>
+          <circle cx="24" cy="21" r="8" fill="#2563EB" opacity="0.2"/>
+          <circle cx="24" cy="21" r="4" fill="#2563EB"/>
+        </svg>
+        <div style={{fontSize:15,color:"#64748B"}}>Carregando Ativa…</div>
+      </div>
+    </div>
   );
 
   return (
-    <div style={{fontFamily:"Inter,-apple-system,sans-serif",background:"#FAF7F2",minHeight:"100vh",color:"#2A2520"}}>
-      <style>{`*{box-sizing:border-box}button,input,select{font-family:inherit;cursor:pointer}.fade-in{animation:fi .22s ease}@keyframes fi{from{opacity:0;transform:translateY(-4px)}to{opacity:1;transform:none}}::-webkit-scrollbar{width:6px;height:6px}::-webkit-scrollbar-thumb{background:#D8CFC0;border-radius:3px}`}</style>
-      <div style={{maxWidth:1100,margin:"0 auto",padding:"28px 20px 80px"}}>
+    <div style={{fontFamily:"Inter,-apple-system,sans-serif",background:"#F4F6FA",minHeight:"100vh",color:"#1E293B"}}>
+      <style>{`*{box-sizing:border-box}button,input,select{font-family:inherit}input{cursor:text}.fade-in{animation:fi .2s ease}@keyframes fi{from{opacity:0;transform:translateY(-4px)}to{opacity:1;transform:none}}::-webkit-scrollbar{width:5px;height:5px}::-webkit-scrollbar-thumb{background:#CBD5E1;border-radius:3px}.nav-btn{background:none;border:none;color:rgba(255,255,255,.75);font-size:14px;font-weight:500;padding:6px 14px;border-radius:6px;cursor:pointer;transition:all .15s}.nav-btn:hover{background:rgba(255,255,255,.12);color:#fff}.filter-btn{padding:7px 14px;border-radius:8px;font-size:13px;font-weight:500;cursor:pointer;transition:all .15s;border:1px solid #E2E8F0;background:#fff;color:#475569}.filter-btn.active{background:#2563EB;border-color:#2563EB;color:#fff}.filter-btn:hover:not(.active){background:#F1F5F9}`}</style>
+
+      {/* Navbar */}
+      <nav style={{background:"linear-gradient(135deg,#1D4ED8 0%,#2563EB 60%,#1E40AF 100%)",boxShadow:"0 2px 12px rgba(37,99,235,.3)",position:"sticky",top:0,zIndex:50}}>
+        <div style={{maxWidth:1200,margin:"0 auto",padding:"0 24px",display:"flex",alignItems:"center",height:60}}>
+          <div style={{display:"flex",alignItems:"center",gap:10,marginRight:36,flexShrink:0}}>
+            <div style={{background:"rgba(255,255,255,.15)",borderRadius:10,padding:"6px 10px",display:"flex",alignItems:"center",gap:8}}>
+              <svg width="26" height="22" viewBox="0 0 36 32" fill="none">
+                <line x1="9" y1="10" x2="18" y2="16" stroke="rgba(255,255,255,.3)" strokeWidth="1.5"/>
+                <line x1="18" y1="16" x2="27" y2="8" stroke="rgba(255,255,255,.3)" strokeWidth="1.5"/>
+                <line x1="18" y1="16" x2="26" y2="24" stroke="rgba(255,255,255,.3)" strokeWidth="1.5"/>
+                <line x1="9" y1="10" x2="8" y2="22" stroke="rgba(255,255,255,.3)" strokeWidth="1.5"/>
+                <circle cx="9"  cy="10" r="5" fill="#4DD8C0"/>
+                <circle cx="27" cy="8"  r="4" fill="#F4C95D"/>
+                <circle cx="18" cy="16" r="6" fill="rgba(255,255,255,.9)"/>
+                <circle cx="26" cy="24" r="4" fill="#5B9BD5"/>
+                <circle cx="8"  cy="22" r="3.5" fill="#E8635A"/>
+              </svg>
+              <span style={{color:"#fff",fontWeight:700,fontSize:18,letterSpacing:"-.3px"}}>Ativa</span>
+            </div>
+            <div style={{borderLeft:"1px solid rgba(255,255,255,.2)",paddingLeft:10}}>
+              <div style={{color:"rgba(255,255,255,.9)",fontSize:11.5,fontWeight:600,lineHeight:1.3}}>Inovação nos Territórios</div>
+              <div style={{color:"rgba(255,255,255,.5)",fontSize:10.5,lineHeight:1.3}}>Sebrae/SE · Sergipe</div>
+            </div>
+          </div>
+          <div style={{display:"flex",gap:2,flex:1}}>
+            {(["Diagnóstico","Territórios","Planejamento","Execução"] as string[]).map((item,i)=>(
+              <button key={item} className="nav-btn"
+                style={{background:i===1?"rgba(255,255,255,.18)":undefined,color:i===1?"#fff":undefined,fontWeight:i===1?700:undefined}}>
+                {item}
+              </button>
+            ))}
+          </div>
+          <div style={{display:"flex",alignItems:"center",gap:10}}>
+            <button onClick={()=>exportarPDF(territorios,stats)}
+              style={{display:"flex",alignItems:"center",gap:6,padding:"7px 14px",borderRadius:8,background:"rgba(255,255,255,.15)",color:"#fff",border:"1px solid rgba(255,255,255,.25)",fontWeight:600,fontSize:12.5,cursor:"pointer"}}>
+              <Download size={13}/> Exportar PDF
+            </button>
+            <div style={{width:1,height:22,background:"rgba(255,255,255,.2)"}}/>
+            <div style={{fontSize:11.5,color:saving?"#FCD34D":"rgba(255,255,255,.55)",display:"flex",alignItems:"center",gap:5}}>
+              <span style={{width:6,height:6,borderRadius:"50%",background:saving?"#FCD34D":"#4ADE80",display:"inline-block"}}/>
+              {saving?"salvando…":"sincronizado"}
+            </div>
+          </div>
+        </div>
+      </nav>
+
+      <div style={{maxWidth:1200,margin:"0 auto",padding:"24px 24px 80px"}}>
 
         {/* Header com logo Ativa */}
         <div style={{display:"flex",alignItems:"center",justifyContent:"space-between",flexWrap:"wrap",gap:14,marginBottom:24}}>
@@ -447,25 +505,25 @@ export default function AtivaSergipe() {
         {/* Stat cards */}
         <div style={{display:"grid",gridTemplateColumns:"repeat(auto-fit,minmax(160px,1fr))",gap:10,marginBottom:18}}>
           {([
-            {label:"Territórios ativados",  val:stats.ativados,      color:"#1F4D3D", Icon:CheckCircle2},
-            {label:"Indicador Impulso",      val:stats.impulso,       color:"#C9A53C", Icon:Rocket,     dark:true},
-            {label:"Em andamento",           val:stats.andamento,     color:"#B5562C", Icon:AlertCircle},
-            {label:"Com ações planejadas",   val:stats.comPlanejadas, color:"#7B6FA8", Icon:Calendar},
-            {label:"Sem ação registrada",    val:stats.semAcao,       color:"#9C9286", Icon:Circle},
-          ] as {label:string;val:number;color:string;Icon:React.ElementType;dark?:boolean}[]).map(({label,val,color,Icon,dark})=>(
-            <div key={label} style={{background:"#fff",border:"1px solid #EFE8DA",borderRadius:13,padding:"13px 15px"}}>
-              <div style={{display:"flex",alignItems:"center",justifyContent:"space-between",marginBottom:7}}>
-                <span style={{fontSize:11,color:"#857A6C",fontWeight:600,textTransform:"uppercase",letterSpacing:.4}}>{label}</span>
-                <div style={{width:24,height:24,borderRadius:7,background:color,display:"flex",alignItems:"center",justifyContent:"center",flexShrink:0}}>
-                  <Icon size={13} color={dark?"#2A2520":"#fff"} strokeWidth={2.3}/>
+            {label:"Territórios ativados",  val:stats.ativados,      color:"#2563EB", bg:"#EFF6FF", Icon:CheckCircle2},
+            {label:"Indicador Impulso",      val:stats.impulso,       color:"#D97706", bg:"#FFFBEB", Icon:Rocket},
+            {label:"Em andamento",           val:stats.andamento,     color:"#DC2626", bg:"#FEF2F2", Icon:AlertCircle},
+            {label:"Com ações planejadas",   val:stats.comPlanejadas, color:"#7C3AED", bg:"#F5F3FF", Icon:Calendar},
+            {label:"Sem ação registrada",    val:stats.semAcao,       color:"#64748B", bg:"#F8FAFC", Icon:Circle},
+          ] as {label:string;val:number;color:string;bg:string;Icon:React.ElementType}[]).map(({label,val,color,bg,Icon})=>(
+            <div key={label} style={{background:"#fff",border:"1px solid #E2E8F0",borderRadius:14,padding:"16px 18px",transition:"box-shadow .15s"}}>
+              <div style={{display:"flex",alignItems:"center",justifyContent:"space-between",marginBottom:10}}>
+                <span style={{fontSize:11,color:"#94A3B8",fontWeight:600,textTransform:"uppercase",letterSpacing:.5}}>{label}</span>
+                <div style={{width:28,height:28,borderRadius:8,background:bg,display:"flex",alignItems:"center",justifyContent:"center",flexShrink:0}}>
+                  <Icon size={14} color={color} strokeWidth={2.2}/>
                 </div>
               </div>
-              <div style={{display:"flex",alignItems:"baseline",gap:5,marginBottom:7}}>
-                <span style={{fontSize:26,fontWeight:700,lineHeight:1}}>{val}</span>
-                <span style={{fontSize:12,color:"#9C9286"}}>/ {stats.total} ({Math.round(val/stats.total*100)}%)</span>
+              <div style={{display:"flex",alignItems:"baseline",gap:6,marginBottom:8}}>
+                <span style={{fontSize:28,fontWeight:700,color:"#1E293B",lineHeight:1}}>{val}</span>
+                <span style={{fontSize:12.5,color:"#94A3B8"}}>/ {stats.total} · {Math.round(val/stats.total*100)}%</span>
               </div>
-              <div style={{height:4,background:"#F1EBDD",borderRadius:2,overflow:"hidden"}}>
-                <div style={{width:`${Math.round(val/stats.total*100)}%`,height:"100%",background:color}}/>
+              <div style={{height:4,background:"#F1F5F9",borderRadius:2,overflow:"hidden"}}>
+                <div style={{width:`${Math.round(val/stats.total*100)}%`,height:"100%",background:color,borderRadius:2}}/>
               </div>
             </div>
           ))}
@@ -490,11 +548,8 @@ export default function AtivaSergipe() {
             <input value={search} onChange={e=>setSearch(e.target.value)} placeholder="Buscar município…"
               style={{width:"100%",padding:"8px 10px 8px 32px",borderRadius:8,border:"1px solid #E5DDD0",background:"#fff",fontSize:13.5,outline:"none"}}/>
           </div>
-          {([["todos","Todos"],["ativado","Ativados"],["impulso","Indicador Impulso"],["andamento","Em andamento"],["planejado","Com planejadas"],["sem-acao","Sem ação"]] as [string,string][]).map(([k,l])=>(
-            <button key={k} onClick={()=>setFilter(k)}
-              style={{padding:"7px 11px",borderRadius:8,fontSize:12.5,fontWeight:600,border:filter===k?"1px solid #1F4D3D":"1px solid #E5DDD0",background:filter===k?"#1F4D3D":"#fff",color:filter===k?"#fff":"#6B6259"}}>
-              {l}
-            </button>
+          {([["todos","Todos"],["ativado","Ativados"],["impulso","Ind. Impulso"],["andamento","Em andamento"],["planejado","Com planejadas"],["sem-acao","Sem ação"]] as [string,string][]).map(([k,l])=>(
+            <button key={k} onClick={()=>setFilter(k)} className={`filter-btn${filter===k?" active":""}`}>{l}</button>
           ))}
         </div>
 
@@ -508,8 +563,8 @@ export default function AtivaSergipe() {
         </div>
 
         {/* Lista de municípios */}
-        <div style={{display:"flex",flexDirection:"column",gap:7}}>
-          {filtered.length===0&&<div style={{textAlign:"center",padding:40,color:"#9C9286",fontSize:14}}>Nenhum território encontrado.</div>}
+        <div style={{display:"flex",flexDirection:"column",gap:6}}>
+          {filtered.length===0&&<div style={{textAlign:"center",padding:40,color:"#94A3B8",fontSize:14}}>Nenhum território encontrado.</div>}
           {filtered.map(m=>{
             const data=getMuni(m);
             const st=computeStatus(data);
@@ -547,9 +602,9 @@ function MuniCard({nome,data,status,isOpen,onToggle,onAddExec,onDelExec,onConver
   const [formTipo,setFormTipo]=useState<"executada"|"planejada">("executada");
   const {ativado,impulso,qtdPublicos,planejadas,executadas,projetado}=status;
 
-  const border  = impulso?"#F4C95D":ativado?"#1F4D3D":executadas>0?"#C8623A":planejadas>0?"#7B6FA8":"#EFE8DA";
-  const sBg     = impulso?"#FBF0CF":ativado?"#E4EEE8":executadas>0?"#F8E6DC":planejadas>0?"#EDEAF5":"#F1EBDD";
-  const sColor  = impulso?"#9A7B1E":ativado?"#1F4D3D":executadas>0?"#B5562C":planejadas>0?"#5C4A8C":"#9C9286";
+  const border  = impulso?"#D97706":ativado?"#2563EB":executadas>0?"#DC2626":planejadas>0?"#7C3AED":"#E2E8F0";
+  const sBg     = impulso?"#FFFBEB":ativado?"#EFF6FF":executadas>0?"#FEF2F2":planejadas>0?"#F5F3FF":"#F8FAFC";
+  const sColor  = impulso?"#92400E":ativado?"#1D4ED8":executadas>0?"#991B1B":planejadas>0?"#5B21B6":"#64748B";
   const sLabel  = impulso?"✦ Impulso":ativado?"✔ Ativado":executadas>0?"⚡ Andamento":planejadas>0?"◷ Planejado":"Sem ação";
 
   const execAcoes  = data.executions.filter(e=>!e.tipo||e.tipo==="executada");
@@ -559,7 +614,7 @@ function MuniCard({nome,data,status,isOpen,onToggle,onAddExec,onDelExec,onConver
 
   return(
     <div id={"muni-"+nome.replace(/\s+/g,"-")}
-      style={{background:"#fff",border:`1px solid ${isOpen?border:"#EFE8DA"}`,borderLeft:`4px solid ${border}`,borderRadius:11,overflow:"hidden"}}>
+      style={{background:"#fff",border:`1px solid ${isOpen?border:"#E2E8F0"}`,borderLeft:`4px solid ${border}`,borderRadius:12,overflow:"hidden",boxShadow:isOpen?"0 2px 12px rgba(0,0,0,.06)":"none",transition:"box-shadow .15s"}}>
       <div onClick={onToggle} style={{display:"flex",alignItems:"center",gap:10,padding:"11px 14px",cursor:"pointer"}}>
         {isOpen?<ChevronDown size={15} color="#9C9286"/>:<ChevronRight size={15} color="#9C9286"/>}
         <span style={{fontWeight:600,fontSize:14,flex:1}}>{nome}</span>
@@ -586,16 +641,17 @@ function MuniCard({nome,data,status,isOpen,onToggle,onAddExec,onDelExec,onConver
           })}
         </div>
         {data.eli&&<span style={{fontSize:10,fontWeight:700,padding:"2px 6px",borderRadius:4,background:"#E8E2F3",color:"#5C4A8C"}}>ELI</span>}
+        {data.cidadeEmpreendedora&&<span style={{fontSize:10,fontWeight:700,padding:"2px 6px",borderRadius:4,background:"#DDEEFF",color:"#2563A8"}}>🏙 Cid. Emp.</span>}
         <span style={{fontSize:11,fontWeight:700,padding:"3px 9px",borderRadius:6,background:sBg,color:sColor,whiteSpace:"nowrap"}}>{sLabel}</span>
       </div>
 
       {isOpen&&(
-        <div className="fade-in" style={{padding:"0 14px 14px",borderTop:"1px solid #F4EFE5"}}>
+        <div className="fade-in" style={{padding:"0 16px 16px",borderTop:"1px solid #F1F5F9"}}>
           {/* Flags */}
-          <div style={{display:"flex",gap:18,flexWrap:"wrap",padding:"12px 0 10px"}}>
-            {([["startupAtendida","Startup atendida"],["eli","Participa do ELI"]] as [string,string][]).map(([f,l])=>(
-              <label key={f} style={{display:"flex",alignItems:"center",gap:7,fontSize:13,color:"#4A443B",cursor:"pointer"}}>
-                <input type="checkbox" checked={!!data[f as keyof MuniData]} onChange={e=>onFlag(f,e.target.checked)} style={{width:15,height:15,accentColor:"#1F4D3D"}}/>
+          <div style={{display:"flex",gap:20,flexWrap:"wrap",padding:"14px 0 10px"}}>
+            {([["startupAtendida","Startup atendida"],["eli","Participa do ELI"],["cidadeEmpreendedora","Cidade Empreendedora"]] as [string,string][]).map(([f,l])=>(
+              <label key={f} style={{display:"flex",alignItems:"center",gap:7,fontSize:13,color:"#334155",cursor:"pointer"}}>
+                <input type="checkbox" checked={!!data[f as keyof MuniData]} onChange={e=>onFlag(f,e.target.checked)} style={{width:15,height:15,accentColor:"#2563EB"}}/>
                 {l}
               </label>
             ))}
@@ -618,7 +674,7 @@ function MuniCard({nome,data,status,isOpen,onToggle,onAddExec,onDelExec,onConver
 
           {/* Alerta de falta público */}
           {qtdPublicos>0&&!ativado&&(
-            <div style={{fontSize:12.5,color:"#B5562C",background:"#F8E6DC",padding:"7px 11px",borderRadius:7,marginBottom:10,display:"flex",gap:5,alignItems:"center"}}>
+            <div style={{fontSize:12.5,color:"#991B1B",background:"#FEF2F2",border:"1px solid #FECACA",padding:"7px 11px",borderRadius:7,marginBottom:10,display:"flex",gap:5,alignItems:"center"}}>
               <AlertCircle size={13}/>Falta executar ação para mais {2-qtdPublicos} público{2-qtdPublicos>1?"s":""} diferente{2-qtdPublicos>1?"s":""} para ativar.
             </div>
           )}
@@ -639,11 +695,11 @@ function MuniCard({nome,data,status,isOpen,onToggle,onAddExec,onDelExec,onConver
           {!formOpen?(
             <div style={{display:"flex",gap:8,marginTop:8}}>
               <button onClick={()=>{setFormTipo("executada");setFormOpen(true);}}
-                style={{display:"flex",alignItems:"center",gap:6,fontSize:13,fontWeight:600,color:"#1F4D3D",background:"#E4EEE8",border:"none",padding:"7px 13px",borderRadius:7}}>
+                style={{display:"flex",alignItems:"center",gap:6,fontSize:13,fontWeight:600,color:"#1D4ED8",background:"#EFF6FF",border:"1px solid #BFDBFE",padding:"7px 13px",borderRadius:7,cursor:"pointer"}}>
                 <CheckSquare size={13}/>Registrar executada
               </button>
               <button onClick={()=>{setFormTipo("planejada");setFormOpen(true);}}
-                style={{display:"flex",alignItems:"center",gap:6,fontSize:13,fontWeight:600,color:"#5C4A8C",background:"#EDEAF5",border:"none",padding:"7px 13px",borderRadius:7}}>
+                style={{display:"flex",alignItems:"center",gap:6,fontSize:13,fontWeight:600,color:"#5B21B6",background:"#F5F3FF",border:"1px solid #DDD6FE",padding:"7px 13px",borderRadius:7,cursor:"pointer"}}>
                 <Calendar size={13}/>Registrar planejada
               </button>
             </div>
