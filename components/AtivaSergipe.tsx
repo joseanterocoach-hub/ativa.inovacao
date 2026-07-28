@@ -84,11 +84,11 @@ function MapaSergipe({ territorios, onSelect, selected }: MapaProps) {
   const sc = (r:number[][]): number[][] => r.map(([x,y])=>[x*VW/500, y*VH/700]);
 
   return (
-    <div style={{background:"linear-gradient(160deg,#F7F3EC,#EEE8DC)",border:"1px solid #DDD5C4",borderRadius:20,padding:"20px 24px 18px",marginBottom:24,boxShadow:"0 2px 16px rgba(0,0,0,.06)"}}>
+    <div style={{background:"#fff",border:"1px solid #E2E8F0",borderRadius:12,padding:"20px 24px 18px",marginBottom:20}}>
       <div style={{display:"flex",alignItems:"center",justifyContent:"space-between",marginBottom:16,flexWrap:"wrap",gap:10}}>
         <div>
-          <span style={{fontWeight:700,fontSize:15,color:"#1A1612"}}>Mapa dos Territórios</span>
-          <span style={{fontSize:13,color:"#9C9286",marginLeft:8}}>Sergipe · 75 municípios</span>
+          <span style={{fontWeight:600,fontSize:15,color:"#1E293B"}}>Mapa dos Territórios</span>
+          <span style={{fontSize:13,color:"#94A3B8",marginLeft:8}}>Sergipe · 75 municípios</span>
         </div>
         <div style={{display:"flex",gap:14,flexWrap:"wrap",fontSize:12.5,color:"#6B6259"}}>
           {([["#1F4D3D","Ativado",false],["#F4C95D","Conta p/ Impulso",true],["#C8623A","Em andamento",false],["#7B6FA8","Só planejado",false],["#C9C0B2","Sem ação",false]] as [string,string,boolean][]).map(([c,l,b])=>(
@@ -398,131 +398,71 @@ export default function AtivaSergipe() {
   );
 
   return (
-    <div style={{fontFamily:"Inter,-apple-system,sans-serif",background:"#F4F6FA",minHeight:"100vh",color:"#1E293B"}}>
-      <style>{`*{box-sizing:border-box}button,input,select{font-family:inherit}input{cursor:text}.fade-in{animation:fi .2s ease}@keyframes fi{from{opacity:0;transform:translateY(-4px)}to{opacity:1;transform:none}}::-webkit-scrollbar{width:5px;height:5px}::-webkit-scrollbar-thumb{background:#CBD5E1;border-radius:3px}.nav-btn{background:none;border:none;color:rgba(255,255,255,.75);font-size:14px;font-weight:500;padding:6px 14px;border-radius:6px;cursor:pointer;transition:all .15s}.nav-btn:hover{background:rgba(255,255,255,.12);color:#fff}.filter-btn{padding:7px 14px;border-radius:8px;font-size:13px;font-weight:500;cursor:pointer;transition:all .15s;border:1px solid #E2E8F0;background:#fff;color:#475569}.filter-btn.active{background:#2563EB;border-color:#2563EB;color:#fff}.filter-btn:hover:not(.active){background:#F1F5F9}`}</style>
+    <div style={{fontFamily:"Inter,-apple-system,sans-serif",background:"#F7F8FA",minHeight:"100vh",color:"#1E293B"}}>
+      <style>{`*{box-sizing:border-box}button,input,select{font-family:inherit}input{cursor:text}.fade-in{animation:fi .2s ease}@keyframes fi{from{opacity:0;transform:translateY(-4px)}to{opacity:1;transform:none}}::-webkit-scrollbar{width:5px;height:5px}::-webkit-scrollbar-thumb{background:#CBD5E1;border-radius:3px}.nav-link{background:none;border:none;font-size:14px;font-weight:400;padding:8px 16px;border-radius:20px;cursor:pointer;color:#475569;transition:all .15s}.nav-link:hover{background:#F1F5F9;color:#1E293B}.nav-link.active{background:#2563EB;color:#fff;font-weight:500}.filter-btn{padding:6px 14px;border-radius:20px;font-size:13px;font-weight:400;cursor:pointer;transition:all .15s;border:1px solid #E2E8F0;background:#fff;color:#475569}.filter-btn.active{background:#2563EB;border-color:#2563EB;color:#fff}.filter-btn:hover:not(.active){background:#F1F5F9}`}</style>
 
-      {/* Navbar */}
-      <nav style={{background:"linear-gradient(135deg,#1D4ED8 0%,#2563EB 60%,#1E40AF 100%)",boxShadow:"0 2px 12px rgba(37,99,235,.3)",position:"sticky",top:0,zIndex:50}}>
-        <div style={{maxWidth:1200,margin:"0 auto",padding:"0 24px",display:"flex",alignItems:"center",height:60}}>
-          <div style={{display:"flex",alignItems:"center",gap:10,marginRight:36,flexShrink:0}}>
-            <div style={{background:"rgba(255,255,255,.15)",borderRadius:10,padding:"6px 10px",display:"flex",alignItems:"center",gap:8}}>
-              <svg width="26" height="22" viewBox="0 0 36 32" fill="none">
-                <line x1="9" y1="10" x2="18" y2="16" stroke="rgba(255,255,255,.3)" strokeWidth="1.5"/>
-                <line x1="18" y1="16" x2="27" y2="8" stroke="rgba(255,255,255,.3)" strokeWidth="1.5"/>
-                <line x1="18" y1="16" x2="26" y2="24" stroke="rgba(255,255,255,.3)" strokeWidth="1.5"/>
-                <line x1="9" y1="10" x2="8" y2="22" stroke="rgba(255,255,255,.3)" strokeWidth="1.5"/>
-                <circle cx="9"  cy="10" r="5" fill="#4DD8C0"/>
-                <circle cx="27" cy="8"  r="4" fill="#F4C95D"/>
-                <circle cx="18" cy="16" r="6" fill="rgba(255,255,255,.9)"/>
-                <circle cx="26" cy="24" r="4" fill="#5B9BD5"/>
-                <circle cx="8"  cy="22" r="3.5" fill="#E8635A"/>
-              </svg>
-              <span style={{color:"#fff",fontWeight:700,fontSize:18,letterSpacing:"-.3px"}}>Ativa</span>
-            </div>
-            <div style={{borderLeft:"1px solid rgba(255,255,255,.2)",paddingLeft:10}}>
-              <div style={{color:"rgba(255,255,255,.9)",fontSize:11.5,fontWeight:600,lineHeight:1.3}}>Inovação nos Territórios</div>
-              <div style={{color:"rgba(255,255,255,.5)",fontSize:10.5,lineHeight:1.3}}>Sebrae/SE · Sergipe</div>
-            </div>
+      {/* Navbar — estilo Ativa nacional: branco, limpo, logo colorida */}
+      <nav style={{background:"#fff",borderBottom:"1px solid #E2E8F0",position:"sticky",top:0,zIndex:50}}>
+        <div style={{maxWidth:1280,margin:"0 auto",padding:"0 32px",display:"flex",alignItems:"center",height:56,gap:8}}>
+
+          {/* Logo Ativa */}
+          <div style={{display:"flex",alignItems:"center",gap:8,marginRight:32,flexShrink:0}}>
+            <svg width="32" height="28" viewBox="0 0 36 32" fill="none">
+              <line x1="9" y1="10" x2="18" y2="16" stroke="#CBD5E1" strokeWidth="1.5"/>
+              <line x1="18" y1="16" x2="27" y2="8" stroke="#CBD5E1" strokeWidth="1.5"/>
+              <line x1="18" y1="16" x2="26" y2="24" stroke="#CBD5E1" strokeWidth="1.5"/>
+              <line x1="9" y1="10" x2="8" y2="22" stroke="#CBD5E1" strokeWidth="1.5"/>
+              <circle cx="9"  cy="10" r="5" fill="#4DD8C0"/>
+              <circle cx="27" cy="8"  r="4" fill="#F4C95D"/>
+              <circle cx="18" cy="16" r="6" fill="#2563EB"/>
+              <circle cx="26" cy="24" r="4" fill="#5B9BD5"/>
+              <circle cx="8"  cy="22" r="3.5" fill="#E8635A"/>
+            </svg>
+            <span style={{fontWeight:700,fontSize:19,color:"#1E293B",letterSpacing:"-.4px"}}>Ativa</span>
           </div>
+
+          {/* Links de navegação */}
           <div style={{display:"flex",gap:2,flex:1}}>
             {(["Diagnóstico","Territórios","Planejamento","Execução"] as string[]).map((item,i)=>(
-              <button key={item} className="nav-btn"
-                style={{background:i===1?"rgba(255,255,255,.18)":undefined,color:i===1?"#fff":undefined,fontWeight:i===1?700:undefined}}>
-                {item}
-              </button>
+              <button key={item} className={`nav-link${i===1?" active":""}`}>{item}</button>
             ))}
           </div>
-          <div style={{display:"flex",alignItems:"center",gap:10}}>
+
+          {/* Direita */}
+          <div style={{display:"flex",alignItems:"center",gap:12}}>
             <button onClick={()=>exportarPDF(territorios,stats)}
-              style={{display:"flex",alignItems:"center",gap:6,padding:"7px 14px",borderRadius:8,background:"rgba(255,255,255,.15)",color:"#fff",border:"1px solid rgba(255,255,255,.25)",fontWeight:600,fontSize:12.5,cursor:"pointer"}}>
+              style={{display:"flex",alignItems:"center",gap:6,padding:"7px 16px",borderRadius:20,background:"#2563EB",color:"#fff",border:"none",fontWeight:500,fontSize:13,cursor:"pointer"}}>
               <Download size={13}/> Exportar PDF
             </button>
-            <div style={{width:1,height:22,background:"rgba(255,255,255,.2)"}}/>
-            <div style={{fontSize:11.5,color:saving?"#FCD34D":"rgba(255,255,255,.55)",display:"flex",alignItems:"center",gap:5}}>
-              <span style={{width:6,height:6,borderRadius:"50%",background:saving?"#FCD34D":"#4ADE80",display:"inline-block"}}/>
+            <div style={{fontSize:12,color:saving?"#D97706":"#94A3B8",display:"flex",alignItems:"center",gap:5}}>
+              <span style={{width:6,height:6,borderRadius:"50%",background:saving?"#D97706":"#22C55E",display:"inline-block",flexShrink:0}}/>
               {saving?"salvando…":"sincronizado"}
             </div>
           </div>
         </div>
       </nav>
 
-      <div style={{maxWidth:1200,margin:"0 auto",padding:"24px 24px 80px"}}>
+      <div style={{maxWidth:1280,margin:"0 auto",padding:"28px 32px 80px"}}>
 
-        {/* Header com logo Ativa */}
-        <div style={{display:"flex",alignItems:"center",justifyContent:"space-between",flexWrap:"wrap",gap:14,marginBottom:24}}>
-          {/* Logo Ativa */}
-          <div style={{display:"flex",alignItems:"center",gap:16}}>
-            <div style={{
-              background:"linear-gradient(135deg,#1A6B6B 0%,#1D7F7F 50%,#155E6E 100%)",
-              borderRadius:16,padding:"10px 16px",
-              display:"flex",alignItems:"center",gap:10,
-              boxShadow:"0 4px 16px rgba(26,107,107,.35)",
-              flexShrink:0,
-            }}>
-              {/* Ícone de nós conectados — fiel à logo */}
-              <svg width="36" height="32" viewBox="0 0 36 32" fill="none">
-                {/* Linhas de conexão */}
-                <line x1="9" y1="10" x2="18" y2="16" stroke="rgba(255,255,255,0.35)" strokeWidth="1.5"/>
-                <line x1="18" y1="16" x2="27" y2="8" stroke="rgba(255,255,255,0.35)" strokeWidth="1.5"/>
-                <line x1="18" y1="16" x2="26" y2="24" stroke="rgba(255,255,255,0.35)" strokeWidth="1.5"/>
-                <line x1="9" y1="10" x2="8" y2="22" stroke="rgba(255,255,255,0.35)" strokeWidth="1.5"/>
-                {/* Nós coloridos */}
-                <circle cx="9"  cy="10" r="5" fill="#4DD8C0"/>
-                <circle cx="27" cy="8"  r="4" fill="#F4C95D"/>
-                <circle cx="18" cy="16" r="6" fill="#3BB5A8"/>
-                <circle cx="26" cy="24" r="4" fill="#5B9BD5"/>
-                <circle cx="8"  cy="22" r="3.5" fill="#E8635A"/>
-              </svg>
-              {/* Texto Ativa */}
-              <span style={{
-                color:"#fff",fontWeight:700,fontSize:22,
-                fontFamily:"'Inter',-apple-system,sans-serif",
-                letterSpacing:"-0.5px",
-              }}>Ativa</span>
-            </div>
-            <div>
-              <div style={{fontWeight:700,fontSize:17,color:"#1A1612",letterSpacing:"-0.3px"}}>
-                Inovação nos Territórios
-              </div>
-              <div style={{fontSize:13,color:"#9C9286",marginTop:1}}>
-                Sebrae/SE · Sergipe · {new Date().getFullYear()}
-              </div>
-            </div>
-          </div>
-
-          <div style={{display:"flex",alignItems:"center",gap:12}}>
-            <button onClick={()=>exportarPDF(territorios,stats)}
-              style={{display:"flex",alignItems:"center",gap:7,padding:"9px 16px",borderRadius:9,background:"linear-gradient(135deg,#1A6B6B,#1D7F7F)",color:"#fff",border:"none",fontWeight:600,fontSize:13,boxShadow:"0 2px 8px rgba(26,107,107,.3)",cursor:"pointer"}}>
-              <Download size={14}/> Exportar Relatório PDF
-            </button>
-            <div style={{fontSize:12,color:saving?"#B5562C":"#9C9286",display:"flex",alignItems:"center",gap:5}}>
-              <span style={{width:7,height:7,borderRadius:"50%",background:saving?"#B5562C":"#6FA287",display:"inline-block"}}/>
-              {saving?"salvando…":"sincronizado"}
-            </div>
-          </div>
-        </div>
-
-        {/* Stat cards */}
-        <div style={{display:"grid",gridTemplateColumns:"repeat(auto-fit,minmax(160px,1fr))",gap:10,marginBottom:18}}>
+        {/* Stat cards — estilo nacional */}
+        <div style={{display:"grid",gridTemplateColumns:"repeat(auto-fit,minmax(170px,1fr))",gap:12,marginBottom:20}}>
           {([
-            {label:"Territórios ativados",  val:stats.ativados,      color:"#2563EB", bg:"#EFF6FF", Icon:CheckCircle2},
-            {label:"Indicador Impulso",      val:stats.impulso,       color:"#D97706", bg:"#FFFBEB", Icon:Rocket},
-            {label:"Em andamento",           val:stats.andamento,     color:"#DC2626", bg:"#FEF2F2", Icon:AlertCircle},
-            {label:"Com ações planejadas",   val:stats.comPlanejadas, color:"#7C3AED", bg:"#F5F3FF", Icon:Calendar},
-            {label:"Sem ação registrada",    val:stats.semAcao,       color:"#64748B", bg:"#F8FAFC", Icon:Circle},
-          ] as {label:string;val:number;color:string;bg:string;Icon:React.ElementType}[]).map(({label,val,color,bg,Icon})=>(
-            <div key={label} style={{background:"#fff",border:"1px solid #E2E8F0",borderRadius:14,padding:"16px 18px",transition:"box-shadow .15s"}}>
-              <div style={{display:"flex",alignItems:"center",justifyContent:"space-between",marginBottom:10}}>
-                <span style={{fontSize:11,color:"#94A3B8",fontWeight:600,textTransform:"uppercase",letterSpacing:.5}}>{label}</span>
-                <div style={{width:28,height:28,borderRadius:8,background:bg,display:"flex",alignItems:"center",justifyContent:"center",flexShrink:0}}>
-                  <Icon size={14} color={color} strokeWidth={2.2}/>
-                </div>
+            {label:"Territórios ativados",  val:stats.ativados,      color:"#2563EB", Icon:CheckCircle2},
+            {label:"Indicador Impulso",      val:stats.impulso,       color:"#0EA5E9", Icon:Rocket},
+            {label:"Em andamento",           val:stats.andamento,     color:"#F59E0B", Icon:AlertCircle},
+            {label:"Com ações planejadas",   val:stats.comPlanejadas, color:"#8B5CF6", Icon:Calendar},
+            {label:"Sem ação registrada",    val:stats.semAcao,       color:"#94A3B8", Icon:Circle},
+          ] as {label:string;val:number;color:string;Icon:React.ElementType}[]).map(({label,val,color,Icon})=>(
+            <div key={label} style={{background:"#fff",border:"1px solid #E2E8F0",borderRadius:12,padding:"18px 20px"}}>
+              <div style={{display:"flex",alignItems:"center",justifyContent:"space-between",marginBottom:14}}>
+                <span style={{fontSize:11,color:"#94A3B8",fontWeight:500,textTransform:"uppercase",letterSpacing:.6}}>{label}</span>
+                <Icon size={16} color={color} strokeWidth={1.8}/>
               </div>
-              <div style={{display:"flex",alignItems:"baseline",gap:6,marginBottom:8}}>
-                <span style={{fontSize:28,fontWeight:700,color:"#1E293B",lineHeight:1}}>{val}</span>
-                <span style={{fontSize:12.5,color:"#94A3B8"}}>/ {stats.total} · {Math.round(val/stats.total*100)}%</span>
+              <div style={{display:"flex",alignItems:"baseline",gap:6,marginBottom:10}}>
+                <span style={{fontSize:32,fontWeight:600,color:"#1E293B",lineHeight:1}}>{val}</span>
+                <span style={{fontSize:13,color:"#94A3B8"}}>/ {stats.total} · {Math.round(val/stats.total*100)}%</span>
               </div>
-              <div style={{height:4,background:"#F1F5F9",borderRadius:2,overflow:"hidden"}}>
+              <div style={{height:3,background:"#F1F5F9",borderRadius:2,overflow:"hidden"}}>
                 <div style={{width:`${Math.round(val/stats.total*100)}%`,height:"100%",background:color,borderRadius:2}}/>
               </div>
             </div>
@@ -614,10 +554,10 @@ function MuniCard({nome,data,status,isOpen,onToggle,onAddExec,onDelExec,onConver
 
   return(
     <div id={"muni-"+nome.replace(/\s+/g,"-")}
-      style={{background:"#fff",border:`1px solid ${isOpen?border:"#E2E8F0"}`,borderLeft:`4px solid ${border}`,borderRadius:12,overflow:"hidden",boxShadow:isOpen?"0 2px 12px rgba(0,0,0,.06)":"none",transition:"box-shadow .15s"}}>
-      <div onClick={onToggle} style={{display:"flex",alignItems:"center",gap:10,padding:"11px 14px",cursor:"pointer"}}>
+      style={{background:"#fff",border:"1px solid #E2E8F0",borderLeft:`3px solid ${border}`,borderRadius:10,overflow:"hidden",boxShadow:isOpen?"0 1px 8px rgba(0,0,0,.06)":"none",transition:"all .15s"}}>
+      <div onClick={onToggle} style={{display:"flex",alignItems:"center",gap:10,padding:"12px 16px",cursor:"pointer"}}>
         {isOpen?<ChevronDown size={15} color="#9C9286"/>:<ChevronRight size={15} color="#9C9286"/>}
-        <span style={{fontWeight:600,fontSize:14,flex:1}}>{nome}</span>
+        <span style={{fontWeight:500,fontSize:14,flex:1,color:"#1E293B"}}>{nome}</span>
 
         {/* Mini progress bar */}
         {total>0&&(
@@ -642,11 +582,11 @@ function MuniCard({nome,data,status,isOpen,onToggle,onAddExec,onDelExec,onConver
         </div>
         {data.eli&&<span style={{fontSize:10,fontWeight:700,padding:"2px 6px",borderRadius:4,background:"#E8E2F3",color:"#5C4A8C"}}>ELI</span>}
         {data.cidadeEmpreendedora&&<span style={{fontSize:10,fontWeight:700,padding:"2px 6px",borderRadius:4,background:"#DDEEFF",color:"#2563A8"}}>🏙 Cid. Emp.</span>}
-        <span style={{fontSize:11,fontWeight:700,padding:"3px 9px",borderRadius:6,background:sBg,color:sColor,whiteSpace:"nowrap"}}>{sLabel}</span>
+        <span style={{fontSize:11.5,fontWeight:500,padding:"4px 12px",borderRadius:20,background:sBg,color:sColor,whiteSpace:"nowrap"}}>{sLabel}</span>
       </div>
 
       {isOpen&&(
-        <div className="fade-in" style={{padding:"0 16px 16px",borderTop:"1px solid #F1F5F9"}}>
+        <div className="fade-in" style={{padding:"0 20px 20px",borderTop:"1px solid #F1F5F9",background:"#FAFBFC"}}>
           {/* Flags */}
           <div style={{display:"flex",gap:20,flexWrap:"wrap",padding:"14px 0 10px"}}>
             {([["startupAtendida","Startup atendida"],["eli","Participa do ELI"],["cidadeEmpreendedora","Cidade Empreendedora"]] as [string,string][]).map(([f,l])=>(
@@ -695,11 +635,11 @@ function MuniCard({nome,data,status,isOpen,onToggle,onAddExec,onDelExec,onConver
           {!formOpen?(
             <div style={{display:"flex",gap:8,marginTop:8}}>
               <button onClick={()=>{setFormTipo("executada");setFormOpen(true);}}
-                style={{display:"flex",alignItems:"center",gap:6,fontSize:13,fontWeight:600,color:"#1D4ED8",background:"#EFF6FF",border:"1px solid #BFDBFE",padding:"7px 13px",borderRadius:7,cursor:"pointer"}}>
+                style={{display:"flex",alignItems:"center",gap:6,fontSize:13,fontWeight:500,color:"#2563EB",background:"#fff",border:"1px solid #BFDBFE",padding:"7px 16px",borderRadius:20,cursor:"pointer"}}>
                 <CheckSquare size={13}/>Registrar executada
               </button>
               <button onClick={()=>{setFormTipo("planejada");setFormOpen(true);}}
-                style={{display:"flex",alignItems:"center",gap:6,fontSize:13,fontWeight:600,color:"#5B21B6",background:"#F5F3FF",border:"1px solid #DDD6FE",padding:"7px 13px",borderRadius:7,cursor:"pointer"}}>
+                style={{display:"flex",alignItems:"center",gap:6,fontSize:13,fontWeight:500,color:"#7C3AED",background:"#fff",border:"1px solid #DDD6FE",padding:"7px 16px",borderRadius:20,cursor:"pointer"}}>
                 <Calendar size={13}/>Registrar planejada
               </button>
             </div>
