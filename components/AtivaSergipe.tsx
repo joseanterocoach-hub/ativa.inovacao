@@ -421,12 +421,7 @@ export default function AtivaSergipe() {
             <span style={{fontWeight:700,fontSize:19,color:"#1E293B",letterSpacing:"-.4px"}}>Ativa</span>
           </div>
 
-          {/* Links de navegação */}
-          <div style={{display:"flex",gap:2,flex:1}}>
-            {(["Diagnóstico","Territórios","Planejamento","Execução"] as string[]).map((item,i)=>(
-              <button key={item} className={`nav-link${i===1?" active":""}`}>{item}</button>
-            ))}
-          </div>
+          <div style={{flex:1}}/>
 
           {/* Direita */}
           <div style={{display:"flex",alignItems:"center",gap:12}}>
